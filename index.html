@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>
+            Titulo
+        </h1>
+        <p id="rellenar">La respuesta es:</p>
+        <button id="boton">obtener respuesta</button>
+    </div>
+
+    <script>
+        const host = "http://localhost:8080/";
+        async function getResponse(){
+            const response = await fetch(host + "api");
+            const data = await response.json();
+            return data;
+        }
+
+        async function obtenerRepuesta(){
+            var p = document.getElementById("rellenar");
+            const respuesta = await getResponse();
+            console.log(respuesta);
+            p.innerHTML = "La respuesta es: " + respuesta["message"];
+        }
+
+        document.getElementById("boton").addEventListener("click", obtenerRepuesta);
+
+        // var p = document.getElementById("rellenar");
+        // p.innerHTML = "La respuesta es: " + getResponse();
+    
+
+    </script>
+</body>
+</html>
