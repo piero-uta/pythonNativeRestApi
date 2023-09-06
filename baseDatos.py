@@ -11,10 +11,10 @@ def createTable():
         ENGINE = InnoDB
         DEFAULT CHARACTER SET = utf8;
         """
-    dbCall(sql)
+    dbGet(sql)
 
 
-def dbCall(sql):
+def dbGet(sql):
 
     # Configurar la conexión a la base de datos
     conexion = mysql.connector.connect(
@@ -30,29 +30,59 @@ def dbCall(sql):
     print("Conexión establecida")
     print("Ejecutando consulta...")
     print(sql)
+
     # Ejecutar una consulta SQL
     cursor.execute(sql)
 
     # Obtener los resultados de la consulta
     resultados = cursor.fetchall()
 
-    # Iterar a través de los resultados
-    for fila in resultados:
-        print(fila)
+    # Cerrar el cursor y la conexión
+    cursor.close()
+    conexion.close()
+    return resultados
+
+
+def dbUpdate(sql, values):
+
+    # Configurar la conexión a la base de datos
+    conexion = mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        password="",
+        database="pydb"
+    )
+
+    # Crear un cursor para interactuar con la base de datos
+    cursor = conexion.cursor()
+
+    print("Conexión establecida")
+    print("Ejecutando consulta...")
+    print(sql)
+    print(values)
+
+    # Ejecutar una consulta SQL
+    cursor.execute(sql, values)
+
+    conexion.commit()
+
+    # Obtener los resultados de la consulta
+    resultados = cursor.fetchall()
 
     # Cerrar el cursor y la conexión
     cursor.close()
     conexion.close()
+    return resultados
 
 def insertarUsuario(nombre, apellido, email, password):
-    sql = "INSERT INTO `usuarios` (`nombre`, `apellido`, `email`, `password`) VALUES ('%s', '%s', '%s', '%s')" % (nombre, apellido, email, password,)
-    print(sql)
-    dbCall(sql)
+    sql = "INSERT INTO usuarios (nombre, apellido, email, password) VALUES (%s, %s, %s, %s)" 
+    values = (nombre, apellido, email, password)
+    dbUpdate(sql, values)
 
 def obtenerUsuarios():
     sql = "SELECT * FROM usuarios"
-    resultado = dbCall(sql)
+    resultado = dbGet(sql)
     return resultado
 
-# insertarUsuario("Juan", "Perez", "a", "1234")
+insertarUsuario("Juan", "Perez", "a", "1234")
 print(obtenerUsuarios())
